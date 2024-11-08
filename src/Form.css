@@ -1,0 +1,62 @@
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #2c2f33;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.form-container label {
+    display: block;
+    font-size: 14px;
+    color: #ddd;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.form-container input, .form-container select, .form-container textarea {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #000;
+}
+
+.form-container button {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #45a049;
+}
+
+/* Stiluri specifice pentru dropdown */
+.form-container select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    color: #000;
+    padding: 10px;
+}
