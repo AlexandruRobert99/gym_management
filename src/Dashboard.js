@@ -19,19 +19,9 @@ const Dashboard = () => {
         setUserInfo(info);
     }, []);
 
-    const handleLogout = () => {
-        localStorage.clear();
-        navigate('/login');
-    };
 
     return (
         <div>
-            {/* Buton Logout în colțul din dreapta sus */}
-            <button
-                className="dashboard-logout-btn"
-                onClick={handleLogout}>
-                Logout
-            </button>
 
             {/* Titlul Dashboard */}
             <h1 className="dashboard-title">Dashboard</h1>

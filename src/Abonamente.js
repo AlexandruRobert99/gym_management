@@ -52,6 +52,7 @@ function Abonamente() {
         }
     };
 
+
     return (
         <div className="form-container">
             <h2>Register Subscription</h2>

@@ -4,7 +4,7 @@ const DashboardClase = () => {
     const [clase, setClase] = useState([]);
     const [selectedClass, setSelectedClass] = useState('');
 
-    // 🔎 Fetch clase disponibile și filtrare pentru clase viitoare
+    // Fetch clase disponibile și filtrare pentru clase viitoare
     useEffect(() => {
         async function fetchClase() {
             try {
@@ -87,7 +87,7 @@ const DashboardClase = () => {
         }
     };
 
-    // 🕒 Funcție pentru a elimina secundele din ora
+    // Funcție pentru a elimina secundele din ora
     const formatTime = (time) => {
         return time ? time.slice(0, 5) : '';  // Ex: '08:25:00' → '08:25'
     };
@@ -96,7 +96,7 @@ const DashboardClase = () => {
         <div className="dashboard-classes-container">
             <h3>Clase disponibile</h3>
 
-            {/* 🔎 Afișare detalii clase */}
+            {/* Afișare detalii clase */}
             {clase.length > 0 ? (
                 clase.map((clasa) => (
                     <div key={clasa.id_clasa} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
@@ -113,7 +113,7 @@ const DashboardClase = () => {
                 <p>Nu sunt clase disponibile în acest moment.</p>
             )}
 
-            {/* ⬇️ Select dropdown */}
+            {/*  Select dropdown */}
             <select value={selectedClass} onChange={handleSelectChange}>
                 <option value="">Selectează o clasă</option>
                 {clase.map((clasa) => (
@@ -123,7 +123,7 @@ const DashboardClase = () => {
                 ))}
             </select>
 
-            {/* 🔘 Butoane de înscriere și anulare */}
+            {/* Butoane de înscriere și anulare */}
             <button onClick={handleRegister}>Înscrie-te</button>
             <button onClick={handleCancel}>Anulează înscrierea</button>
         </div>

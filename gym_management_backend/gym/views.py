@@ -1,15 +1,17 @@
 from .serializers import (ClientSerializer, SaliFitnessSerializer, AbonamenteSerializer,
                           AbonamenteSaliSerializer, AngajatiSerializer ,AngajatiSaliSerializer,
-                          ClaseSerializer, RezervariClaseSerializer, ClaseSerializer, ParticipareClaseSerializer)
+                          ClaseSerializer, RezervariClaseSerializer, ClaseSerializer, ParticipareClaseSerializer,
+                          PlatiSerializer)
 from rest_framework import status
 from datetime import datetime, timedelta, date
 from .models import (Clienti, SaliFitness, Abonamente, AbonamenteSali, Angajati, AngajatiSali,
-                     Clase, RezervariClase, ParticipareClase)
+                     Clase, RezervariClase, ParticipareClase, Plati)
 from django.contrib.auth.hashers import make_password, check_password
 import jwt
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.utils.timezone import now
 
 class ClientList(APIView):
     def get(self, request):
@@ -105,8 +107,6 @@ class SaliFitnessList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework.response import Response
-from rest_framework import status
 
 class SaliFitnessDetail(APIView):
     def get(self, request, pk):
@@ -174,7 +174,7 @@ class AbonamenteDetail(APIView):
 
 class AbonamenteSaliList(APIView):
     def get(self, request):
-        abonamente_sali = AbonamenteSali.objects.all()
+        abonamente_sali = AbonamenteSali.objects.select_related('id_abonament', 'id_sala').all()
         serializer = AbonamenteSaliSerializer(abonamente_sali, many=True)
         return Response(serializer.data)
 
@@ -189,7 +189,7 @@ class AbonamenteSaliList(APIView):
 class AbonamenteSaliDetail(APIView):
     def get(self, request, pk):
         try:
-            abonament_sala = AbonamenteSali.objects.get(pk=pk)
+            abonament_sala = AbonamenteSali.objects.select_related('id_abonament', 'id_sala').get(pk=pk)
             serializer = AbonamenteSaliSerializer(abonament_sala)
             return Response(serializer.data)
         except AbonamenteSali.DoesNotExist:
@@ -431,3 +431,50 @@ class AnulareInscriereClaseView(APIView):
             return Response({'error': 'Clasa nu a fost găsită.'}, status=status.HTTP_404_NOT_FOUND)
         except Clienti.DoesNotExist:
             return Response({'error': 'Clientul nu a fost găsit.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PlatiList(APIView):
+    def post(self, request):
+        try:
+            id_client = request.data.get('id_client')
+            id_abonament = request.data.get('id_abonament')
+
+            # Validare existență client și abonament
+            client = Clienti.objects.get(pk=id_client)
+            abonament = Abonamente.objects.get(pk=id_abonament)
+
+            # Creare plată cu data curentă
+            plata = Plati.objects.create(
+                suma=abonament.pret,
+                data_platii=now().date(),  # Se setează automat data curentă
+                id_abonament=abonament,
+                id_client=client
+            )
+
+            serializer = PlatiSerializer(plata)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Clienti.DoesNotExist:
+            return Response({"error": "Clientul nu există."}, status=status.HTTP_404_NOT_FOUND)
+        except Abonamente.DoesNotExist:
+            return Response({"error": "Abonamentul nu există."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PlatiDetail(APIView):
+    def get(self, request, pk):
+        try:
+            plata = Plati.objects.get(pk=pk)
+            serializer = PlatiSerializer(plata)
+            return Response(serializer.data)
+        except Plati.DoesNotExist:
+            return Response({"error": "Plata nu a fost găsită."}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        try:
+            plata = Plati.objects.get(pk=pk)
+            plata.delete()
+            return Response({"message": "Plata a fost ștearsă cu succes."}, status=status.HTTP_204_NO_CONTENT)
+        except Plati.DoesNotExist:
+            return Response({"error": "Plata nu a fost găsită."}, status=status.HTTP_404_NOT_FOUND)

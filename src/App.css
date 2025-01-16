@@ -205,3 +205,62 @@ body {
   background-color: #282c34; /* Fundal gri închis */
   border-radius: 10px;
 }
+
+.abonamente-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.abonamente-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card-abonament {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.card-abonament:hover {
+  transform: scale(1.05);
+}
+
+.card-abonament h3 {
+  margin-top: 0;
+  color: #ffd700;
+}
+
+.sala-info {
+  background-color: #2a2a2a;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.purchase-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.purchase-button:hover {
+  background-color: #218838;
+}
+
+.purchase-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
 
 // Importăm componentele
 import Dashboard from "./Dashboard";
@@ -13,6 +13,33 @@ import AngajatiSali from "./AngajatiSali";
 import Clase from "./Clase";
 import "./App.css";
 import ProtectedRoute from "./ProtectedRoute";
+import PlataAbonament from "./PlataAbonament";
+
+// Componentă pentru Logout
+const LogoutButton = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.clear();  // Șterge datele de autentificare
+        navigate('/login');    // Redirecționează către pagina de login
+    };
+
+    return (
+        <button
+            onClick={handleLogout}
+            style={{
+                backgroundColor: '#ff4d4d',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer'
+            }}
+        >
+            Logout
+        </button>
+    );
+};
 
 function App() {
     return (
@@ -28,18 +55,18 @@ function App() {
                             <li><Link to="/angajati">Angajați</Link></li>
                             <li><Link to="/angajati-sali">Angajați Săli</Link></li>
                             <li><Link to="/clase">Clase</Link></li>
+                            <li><Link to="/plata-abonament">Plata abonament</Link></li>
                             <li><Link to="/login">Login</Link></li>
                             <li><Link to="/register">Register</Link></li>
+                            <li><LogoutButton/></li>
                         </ul>
                     </nav>
                 </header>
 
                 <main>
                     <Routes>
-
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-
 
                         {/* Rute protejate */}
                         <Route
@@ -95,6 +122,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <Clase />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/plata-abonament"
+                            element={
+                                <ProtectedRoute>
+                                    <PlataAbonament />
                                 </ProtectedRoute>
                             }
                         />

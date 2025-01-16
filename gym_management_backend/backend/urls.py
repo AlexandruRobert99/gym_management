@@ -21,6 +21,7 @@ from gym.views import (ClientList, ClientDetail, LoginView, LogoutView, SaliFitn
                        SaliFitnessDetail, AbonamenteList, AbonamenteDetail, AbonamenteSaliList,
                        AbonamenteSaliDetail, AngajatiList, AngajatiDetail, AngajatiSaliList,
                        AngajatiSaliDetail, ClaseList, ClaseDetail, InscriereClaseView, AnulareInscriereClaseView,
+                       PlatiList, PlatiDetail
                        )
 
 urlpatterns = [
@@ -43,4 +44,7 @@ urlpatterns = [
     path('api/clase/<int:pk>/', ClaseDetail.as_view(), name='clase-detail'),
     path('api/clase/<int:pk>/inregistrare/', InscriereClaseView.as_view(), name='inscriere-clasa'),
     path('api/clase/<int:pk>/anulare/', AnulareInscriereClaseView.as_view(), name='anulare-inscriere'),
+    path('api/plati/', PlatiList.as_view(), name='plati-list'),
+    path('api/plati/<int:pk>/', PlatiDetail.as_view(), name='plati-detail'),
+
 ]
