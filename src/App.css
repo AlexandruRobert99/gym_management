@@ -25,7 +25,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #f1c40f;
 }
 
 @keyframes App-logo-spin {
@@ -52,7 +52,7 @@ nav ul li {
 
 nav ul li a {
   text-decoration: none;
-  color: #61dafb;
+  color: #f1c40f;
   font-size: calc(10px + 2vmin);
   transition: color 0.3s;
 }
@@ -69,11 +69,139 @@ main {
 /* Stil pentru pagina de întâmpinare */
 h1 {
   font-size: calc(20px + 2vmin);
-  color: #61dafb;
+  color: #f1c40f;
   margin-bottom: 20px;
 }
 
 p {
   font-size: calc(14px + 1vmin);
   color: white;
+}
+
+/* Stil general pentru tema galben-negru */
+body {
+  background-color: #1e1e1e; /* Negru închis */
+  color: #f1c40f; /* Galben */
+  font-family: Arial, sans-serif;
+}
+
+/* Stil pentru Dashboard */
+.dashboard-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.dashboard-header {
+  font-size: calc(20px + 2vmin);
+  color: #f1c40f; /* Galben */
+  margin-bottom: 20px;
+}
+
+.dashboard-info {
+  font-size: calc(14px + 1vmin);
+  color: #f1c40f; /* Galben */
+  margin-bottom: 10px;
+}
+
+.dashboard-info span {
+  font-weight: bold;
+  color: #ffffff; /* Alb pentru etichete */
+}
+
+/* Stil pentru butonul de logout în colțul din dreapta sus */
+.dashboard-logout-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  font-size: calc(12px + 1vmin);
+  background-color: #f1c40f; /* Galben */
+  color: #1e1e1e; /* Negru */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-logout-btn:hover {
+  background-color: #d4ac0d; /* O nuanță mai închisă de galben */
+}
+
+/* Layout pentru Dashboard */
+.dashboard-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* Secțiunea informațiilor (stânga) */
+.dashboard-info-container {
+  width: 50%; /* Jumătate din lățime */
+  padding: 20px;
+}
+
+/* Stil pentru informații */
+.dashboard-info {
+  font-size: calc(14px + 1vmin);
+  color: #f1c40f; /* Galben */
+  margin-bottom: 10px;
+}
+
+.dashboard-info span {
+  font-weight: bold;
+  color: #ffffff; /* Alb pentru etichete */
+}
+
+/* Secțiunea codului QR (dreapta) */
+.dashboard-qr-container {
+  width: 50%; /* Jumătate din lățime */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #282c34; /* Fundal gri închis */
+  border-radius: 10px;
+}
+
+/* Stil pentru titlul QR */
+.dashboard-header {
+  font-size: calc(20px + 2vmin);
+  color: #f1c40f; /* Galben */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Layout pentru Dashboard */
+.dashboard-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  margin-top: 20px; /* Separăm titlul de restul conținutului */
+}
+
+/* Titlul centralizat */
+.dashboard-title {
+  text-align: center;
+  font-size: calc(20px + 2vmin);
+  color: #f1c40f; /* Galben */
+  margin-bottom: 20px;
+}
+
+/* Secțiunea informațiilor (stânga) */
+.dashboard-info-container {
+  width: 45%; /* Aproximativ jumătate din lățime */
+  padding: 20px;
+}
+
+/* Secțiunea codului QR (dreapta) */
+.dashboard-qr-container {
+  width: 45%; /* Aproximativ jumătate din lățime */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #282c34; /* Fundal gri închis */
+  border-radius: 10px;
 }

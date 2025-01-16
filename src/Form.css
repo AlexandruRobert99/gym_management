@@ -1,38 +1,58 @@
+/* Formular */
 .form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    background-color: #2c2f33;
+    border: 1px solid #444; /* Culoare mai întunecată pentru border */
+    border-radius: 10px; /* Colțuri rotunjite */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Umbră mai subtilă */
+    background-color: #2c2f33; /* Gri închis */
+}
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ocupă întreaga înălțime a paginii */
+    background-color: #1e1e1e; /* Fundal general */
 }
 
 .form-container h2 {
     margin-bottom: 20px;
-    color: #fff;
+    color: #f1c40f; /* Galben */
+    font-size: 24px; /* Dimensiune mai mare */
 }
 
 .form-container label {
     display: block;
     font-size: 14px;
-    color: #ddd;
+    color: #f1c40f; /* Galben */
     margin-bottom: 5px;
     text-align: left;
 }
 
-.form-container input, .form-container select, .form-container textarea {
+.form-container input,
+.form-container select,
+.form-container textarea {
     width: 100%;
     max-width: 350px;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+    border: 1px solid #555; /* Border mai întunecat */
+    border-radius: 5px;
     box-sizing: border-box;
-    background-color: #fff;
-    color: #000;
+    background-color: #1e1e1e; /* Negru */
+    color: #f1c40f; /* Galben */
+    font-size: 14px;
+}
+
+.form-container input::placeholder,
+.form-container textarea::placeholder {
+    color: #888; /* Placeholder mai subtil */
 }
 
 .form-container button {
@@ -40,15 +60,16 @@
     max-width: 350px;
     padding: 10px;
     border: none;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #f1c40f; /* Galben */
+    color: #1e1e1e; /* Negru */
     font-size: 16px;
-    border-radius: 3px;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .form-container button:hover {
-    background-color: #45a049;
+    background-color: #d4ac0d; /* O nuanță mai închisă de galben */
 }
 
 /* Stiluri specifice pentru dropdown */
@@ -56,7 +77,70 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-color: #fff;
-    color: #000;
+    background-color: #1e1e1e; /* Negru */
+    color: #f1c40f; /* Galben */
     padding: 10px;
+}
+
+/* Layout pentru Dashboard */
+.dashboard-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    margin-top: 20px; /* Separăm titlul de restul conținutului */
+}
+
+.dashboard-info-container {
+    width: 45%; /* Aproximativ jumătate din lățime */
+    padding: 20px;
+}
+
+.dashboard-qr-container {
+    width: 45%; /* Aproximativ jumătate din lățime */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #282c34; /* Fundal gri închis */
+    border-radius: 10px;
+}
+
+.dashboard-title {
+    text-align: center;
+    font-size: calc(20px + 2vmin);
+    color: #f1c40f; /* Galben */
+    margin-bottom: 20px;
+}
+
+/* Media query pentru telefoane */
+@media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column-reverse; /* Codul QR apare deasupra informațiilor */
+        align-items: center;
+    }
+
+    .dashboard-info-container,
+    .dashboard-qr-container {
+        width: 100%; /* Lățime completă */
+        margin-bottom: 20px; /* Spațiu între secțiuni */
+        padding: 10px; /* Reducem padding-ul */
+    }
+
+    .dashboard-qr-container {
+        padding: 10px;
+    }
+
+    .form-container {
+        margin: 20px auto; /* Reducem spațiul vertical pentru telefoane */
+    }
+
+    .form-container h2 {
+        font-size: 20px; /* Dimensiune mai mică pe ecrane mici */
+    }
+
+    .form-container input,
+    .form-container button {
+        font-size: 14px; /* Dimensiune mai mică pe ecrane mici */
+    }
 }

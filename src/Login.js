@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Pentru redirecționare
-import './Form.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
-
-    const navigate = useNavigate(); // Hook pentru redirecționare
+    const [formData, setFormData] = useState({ email: '', parola: '' });
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -19,33 +15,37 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/login/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    parola: formData.password
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             });
 
             if (response.ok) {
                 const data = await response.json();
-                alert('Login successful!');
-                localStorage.setItem('token', data.token);
 
-                // Redirecționare către Dashboard
+                // Salvăm toate datele în localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('id_client', data.id_client);
+                localStorage.setItem('nume', data.nume);
+                localStorage.setItem('prenume', data.prenume);
+                localStorage.setItem('email', data.email);
+                localStorage.setItem('adresa', data.adresa);
+                localStorage.setItem('telefon', data.telefon);
+                localStorage.setItem('data_nasterii', data.data_nasterii);
+                localStorage.setItem('data_inscrierii', data.data_inscrierii);
+
                 navigate('/dashboard');
             } else {
                 const errorData = await response.json();
-                alert('Login failed: ' + errorData.error);
+                setError(errorData.error || 'Login failed.');
             }
-        } catch (error) {
-            console.error('Error during login:', error);
-            alert('An error occurred. Please try again.');
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+            console.error(err);
         }
     };
 
@@ -66,13 +66,14 @@ function Login() {
                 <label>Password</label>
                 <input
                     type="password"
-                    name="password"
+                    name="parola"
                     placeholder="Enter your password"
-                    value={formData.password}
+                    value={formData.parola}
                     onChange={handleChange}
                     required
                 />
 
+                {error && <p className="error">{error}</p>}
                 <button type="submit">Login</button>
             </form>
         </div>

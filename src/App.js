@@ -1,48 +1,103 @@
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+
+// Importăm componentele
+import Dashboard from "./Dashboard";
 import Login from "./Login";
 import Register from "./Register";
 import SaliFitness from "./SaliFitness";
-import Angajati from "./Angajati";
 import Abonamente from "./Abonamente";
+import AbonamenteSali from "./AbonamenteSali";
+import Angajati from "./Angajati";
 import AngajatiSali from "./AngajatiSali";
 import Clase from "./Clase";
-import AbonamenteSali from "./AbonamenteSali";
-import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import "./App.css";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
     return (
         <Router>
             <div className="App">
-                {/* Bara de navigare */}
                 <header className="App-header">
                     <nav>
                         <ul>
-                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/dashboard">Dashboard</Link></li>
+                            <li><Link to="/sali-fitness">Săli Fitness</Link></li>
+                            <li><Link to="/abonamente">Abonamente</Link></li>
+                            <li><Link to="/abonamente-sali">Abonamente Săli</Link></li>
+                            <li><Link to="/angajati">Angajați</Link></li>
+                            <li><Link to="/angajati-sali">Angajați Săli</Link></li>
+                            <li><Link to="/clase">Clase</Link></li>
                             <li><Link to="/login">Login</Link></li>
                             <li><Link to="/register">Register</Link></li>
-                            <li><Link to="/sali-fitness">Săli Fitness</Link></li>
-                            <li><Link to="/angajati">Angajați</Link></li>
-                            <li><Link to="/clase">Clase</Link></li>
-                            <li><Link to="/abonamente">Abonamente</Link></li>
-                            <li><Link to="/angajati-sali">Angajați Săli</Link></li>
-                            <li><Link to="/abonamente-sali">Abonamente Săli</Link></li>
                         </ul>
                     </nav>
                 </header>
 
-                {/* Configurare rute */}
                 <main>
                     <Routes>
-                        <Route path="/" element={<h1>Bun venit la aplicația de management pentru sălile de fitness!</h1>} />
+
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/sali-fitness" element={<SaliFitness />} />
-                        <Route path="/angajati" element={<Angajati />} />
-                        <Route path="/clase" element={<Clase />} />
-                        <Route path="/abonamente" element={<Abonamente />} />
-                        <Route path="/angajati-sali" element={<AngajatiSali />} />
-                        <Route path="/abonamente-sali" element={<AbonamenteSali />} />
-                        <Route path="*" element={<h1>Pagina nu a fost găsită</h1>} />
+
+
+                        {/* Rute protejate */}
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/sali-fitness"
+                            element={
+                                <ProtectedRoute>
+                                    <SaliFitness />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/abonamente"
+                            element={
+                                <ProtectedRoute>
+                                    <Abonamente />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/abonamente-sali"
+                            element={
+                                <ProtectedRoute>
+                                    <AbonamenteSali />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/angajati"
+                            element={
+                                <ProtectedRoute>
+                                    <Angajati />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/angajati-sali"
+                            element={
+                                <ProtectedRoute>
+                                    <AngajatiSali />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/clase"
+                            element={
+                                <ProtectedRoute>
+                                    <Clase />
+                                </ProtectedRoute>
+                            }
+                        />
                     </Routes>
                 </main>
             </div>
