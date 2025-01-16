@@ -105,7 +105,18 @@ class SaliFitnessList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from rest_framework.response import Response
+from rest_framework import status
+
 class SaliFitnessDetail(APIView):
+    def get(self, request, pk):
+        try:
+            sala = SaliFitness.objects.get(pk=pk)
+            serializer = SaliFitnessSerializer(sala)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except SaliFitness.DoesNotExist:
+            return Response({"error": "Sala Fitness not found"}, status=status.HTTP_404_NOT_FOUND)
+
     def put(self, request, pk):
         try:
             sala = SaliFitness.objects.get(pk=pk)
@@ -117,6 +128,7 @@ class SaliFitnessDetail(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except SaliFitness.DoesNotExist:
             return Response({"error": "Sala Fitness not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class AbonamenteList(APIView):
     def get(self, request):
@@ -255,42 +267,35 @@ class AngajatiDetail(APIView):
 class AngajatiSaliList(APIView):
     def get(self, request):
         angajati_sali = AngajatiSali.objects.all()
-        serializer = AngajatiSaliSerializer(angajati_sali, many=True)
-        return Response(serializer.data)
+        detailed_data = []
 
-    def post(self, request):
-        serializer = AngajatiSaliSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        for entry in angajati_sali:
+            detailed_data.append({
+                'id': entry.id,
+                'id_angajat': entry.id_angajat.id_angajat,
+                'nume_angajat': f"{entry.id_angajat.prenume} {entry.id_angajat.nume}",
+                'functie_angajat': entry.id_angajat.functie,
+                'id_sala': entry.id_sala.id_sala,
+                'nume_sala': entry.id_sala.nume_sala
+            })
+
+        return Response(detailed_data)
+
 
 
 class AngajatiSaliDetail(APIView):
     def get(self, request, pk):
         try:
             angajat_sala = AngajatiSali.objects.get(pk=pk)
-            serializer = AngajatiSaliSerializer(angajat_sala)
-            return Response(serializer.data)
-        except AngajatiSali.DoesNotExist:
-            return Response({"error": "Employee-Gym assignment not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    def put(self, request, pk):
-        try:
-            angajat_sala = AngajatiSali.objects.get(pk=pk)
-            serializer = AngajatiSaliSerializer(angajat_sala, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except AngajatiSali.DoesNotExist:
-            return Response({"error": "Employee-Gym assignment not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    def delete(self, request, pk):
-        try:
-            angajat_sala = AngajatiSali.objects.get(pk=pk)
-            angajat_sala.delete()
-            return Response({"message": "Employee-Gym assignment deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            detailed_data = {
+                'id': angajat_sala.id,
+                'id_angajat': angajat_sala.id_angajat.id_angajat,
+                'nume_angajat': f"{angajat_sala.id_angajat.prenume} {angajat_sala.id_angajat.nume}",
+                'functie_angajat': angajat_sala.id_angajat.functie,
+                'id_sala': angajat_sala.id_sala.id_sala,
+                'nume_sala': angajat_sala.id_sala.nume_sala
+            }
+            return Response(detailed_data)
         except AngajatiSali.DoesNotExist:
             return Response({"error": "Employee-Gym assignment not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -298,8 +303,23 @@ class AngajatiSaliDetail(APIView):
 class ClaseList(APIView):
     def get(self, request):
         clase = Clase.objects.all()
-        serializer = ClaseSerializer(clase, many=True)
-        return Response(serializer.data)
+        clase_data = []
+
+        for clasa in clase:
+            # Obținem numele complet al antrenorului
+            nume_antrenor = f"{clasa.id_antrenor.prenume} {clasa.id_antrenor.nume}" if clasa.id_antrenor else "Nespecificat"
+
+            # Obținem numele sălii
+            nume_sala = clasa.id_sala.nume_sala if clasa.id_sala else "Nespecificată"
+
+            # Serializăm datele clasei și adăugăm informațiile suplimentare
+            clasa_info = ClaseSerializer(clasa).data
+            clasa_info['nume_antrenor'] = nume_antrenor
+            clasa_info['nume_sala'] = nume_sala
+
+            clase_data.append(clasa_info)
+
+        return Response(clase_data)
 
     def post(self, request):
         serializer = ClaseSerializer(data=request.data)
@@ -309,12 +329,30 @@ class ClaseList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class ClaseDetail(APIView):
     def get(self, request, pk):
         try:
             clasa = Clase.objects.get(pk=pk)
+
+            # Obținem numele antrenorului
+            antrenor = clasa.id_antrenor
+            nume_antrenor = f"{antrenor.prenume} {antrenor.nume}" if antrenor else "Fără antrenor"
+
+            # Obținem numele sălii
+            sala = clasa.id_sala
+            nume_sala = sala.nume_sala if sala else "Fără sală"
+
+            # Serializăm clasa
             serializer = ClaseSerializer(clasa)
-            return Response(serializer.data)
+
+            # Completăm răspunsul cu datele adiționale
+            clasa_data = serializer.data
+            clasa_data['nume_antrenor'] = nume_antrenor
+            clasa_data['nume_sala'] = nume_sala
+
+            return Response(clasa_data)
+
         except Clase.DoesNotExist:
             return Response({"error": "Class not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -336,3 +374,60 @@ class ClaseDetail(APIView):
             return Response({"message": "Class deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Clase.DoesNotExist:
             return Response({"error": "Class not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+class InscriereClaseView(APIView):
+    def post(self, request, pk):
+        client_id = request.data.get('id_client')
+
+        try:
+            clasa = Clase.objects.get(pk=pk)
+            client = Clienti.objects.get(pk=client_id)
+
+            # Verificăm dacă clientul este deja înscris la această clasă
+            inscris = RezervariClase.objects.filter(id_clasa=clasa, id_client=client).exists()
+            if inscris:
+                return Response({'error': 'Ești deja înscris la această clasă.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Verificăm dacă clasa este completă
+            if clasa.numar_participanti >= clasa.capacitate_clasa:
+                return Response({'error': 'Clasa este completă.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Creăm rezervarea și actualizăm numărul de participanți
+            RezervariClase.objects.create(id_clasa=clasa, id_client=client, data_rezervare=datetime.now())
+            clasa.numar_participanti += 1
+            clasa.save()
+
+            return Response({'message': 'Înscriere realizată cu succes!'}, status=status.HTTP_201_CREATED)
+
+        except Clase.DoesNotExist:
+            return Response({'error': 'Clasa nu a fost găsită.'}, status=status.HTTP_404_NOT_FOUND)
+        except Clienti.DoesNotExist:
+            return Response({'error': 'Clientul nu a fost găsit.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AnulareInscriereClaseView(APIView):
+    def post(self, request, pk):
+        client_id = request.data.get('id_client')
+
+        try:
+            clasa = Clase.objects.get(pk=pk)
+            client = Clienti.objects.get(pk=client_id)
+
+            # Verificăm dacă clientul este înscris la clasă
+            rezervare = RezervariClase.objects.filter(id_clasa=clasa, id_client=client).first()
+            if not rezervare:
+                return Response({'error': 'Nu ești înscris la această clasă.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Ștergem rezervarea și actualizăm numărul de participanți
+            rezervare.delete()
+            clasa.numar_participanti -= 1
+            clasa.save()
+
+            return Response({'message': 'Înscriere anulată cu succes!'}, status=status.HTTP_200_OK)
+
+        except Clase.DoesNotExist:
+            return Response({'error': 'Clasa nu a fost găsită.'}, status=status.HTTP_404_NOT_FOUND)
+        except Clienti.DoesNotExist:
+            return Response({'error': 'Clientul nu a fost găsit.'}, status=status.HTTP_404_NOT_FOUND)

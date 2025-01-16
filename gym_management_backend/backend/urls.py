@@ -20,7 +20,7 @@ from django.urls import path
 from gym.views import (ClientList, ClientDetail, LoginView, LogoutView, SaliFitnessList,
                        SaliFitnessDetail, AbonamenteList, AbonamenteDetail, AbonamenteSaliList,
                        AbonamenteSaliDetail, AngajatiList, AngajatiDetail, AngajatiSaliList,
-                       AngajatiSaliDetail, ClaseList, ClaseDetail,
+                       AngajatiSaliDetail, ClaseList, ClaseDetail, InscriereClaseView, AnulareInscriereClaseView,
                        )
 
 urlpatterns = [
@@ -41,4 +41,6 @@ urlpatterns = [
     path('api/angajati-sali/<int:pk>/', AngajatiSaliDetail.as_view(), name='angajati-sali-detail'),
     path('api/clase/', ClaseList.as_view(), name='clase-list'),
     path('api/clase/<int:pk>/', ClaseDetail.as_view(), name='clase-detail'),
+    path('api/clase/<int:pk>/inregistrare/', InscriereClaseView.as_view(), name='inscriere-clasa'),
+    path('api/clase/<int:pk>/anulare/', AnulareInscriereClaseView.as_view(), name='anulare-inscriere'),
 ]

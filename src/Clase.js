@@ -14,7 +14,7 @@ function Clase() {
         gym: '',
     });
 
-    // Fetch trainers
+    // 🔎 Fetch pentru traineri (doar cei cu funcția "trainer")
     useEffect(() => {
         async function fetchTrainers() {
             try {
@@ -34,33 +34,28 @@ function Clase() {
         fetchTrainers();
     }, []);
 
+    // 🔎 Fetch pentru săli în funcție de trainerul selectat
     useEffect(() => {
         async function fetchGymsForTrainer() {
             if (!formData.trainer) {
-                setGyms([]); // Resetează lista de săli dacă trainer-ul nu este selectat
+                setGyms([]); // Resetăm sălile dacă nu e selectat niciun trainer
                 return;
             }
 
             try {
-                // Fetch relațiile din angajati_sali pe baza trainerului selectat
-                const response = await fetch(`http://127.0.0.1:8000/api/angajati-sali/?id_angajat=${formData.trainer}`);
+                const response = await fetch(`http://127.0.0.1:8000/api/angajati-sali/`);
                 if (response.ok) {
                     const relations = await response.json();
 
-                    // Fetch detalii despre săli folosind id_sala din relații
-                    const gymDetails = await Promise.all(
-                        relations.map(async (relation) => {
-                            const gymResponse = await fetch(`http://127.0.0.1:8000/api/sali-fitness/${relation.id_sala}/`);
-                            if (gymResponse.ok) {
-                                return await gymResponse.json();
-                            }
-                            console.error(`Failed to fetch gym details for ID ${relation.id_sala}`);
-                            return null;
-                        })
-                    );
+                    // Filtrăm sălile aferente trainerului selectat
+                    const gymDetails = relations
+                        .filter(relation => relation.id_angajat === parseInt(formData.trainer))
+                        .map(relation => ({
+                            id_sala: relation.id_sala,
+                            nume_sala: relation.nume_sala
+                        }));
 
-                    // Setează sălile în starea componentului, eliminând valorile nule
-                    setGyms(gymDetails.filter((gym) => gym !== null));
+                    setGyms(gymDetails);
                 } else {
                     console.error('Failed to fetch gym relations for the trainer');
                 }
@@ -72,6 +67,7 @@ function Clase() {
         fetchGymsForTrainer();
     }, [formData.trainer]);
 
+    // 📝 Actualizăm formularul la schimbarea inputului
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -79,6 +75,7 @@ function Clase() {
         });
     };
 
+    // ✅ Submit pentru creare clasă
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -110,7 +107,7 @@ function Clase() {
                     classDate: '',
                     gym: '',
                 });
-                setGyms([]); // Reset gyms
+                setGyms([]); // Resetăm sălile
             } else {
                 const data = await response.json();
                 console.error(data);
@@ -126,6 +123,7 @@ function Clase() {
         <div className="form-container">
             <h2>Create Class</h2>
             <form onSubmit={handleSubmit}>
+                {/* 🏋️ Nume clasă */}
                 <label>Class Name</label>
                 <input
                     type="text"
@@ -136,6 +134,7 @@ function Clase() {
                     required
                 />
 
+                {/* 📊 Capacitate */}
                 <label>Capacity</label>
                 <input
                     type="number"
@@ -146,6 +145,7 @@ function Clase() {
                     required
                 />
 
+                {/* 🧑‍🏫 Select Trainer */}
                 <label>Trainer</label>
                 <select
                     name="trainer"
@@ -156,11 +156,12 @@ function Clase() {
                     <option value="">Select trainer</option>
                     {trainers.map((trainer) => (
                         <option key={trainer.id_angajat} value={trainer.id_angajat}>
-                            {trainer.nume} {trainer.prenume}
+                            {trainer.prenume} {trainer.nume}
                         </option>
                     ))}
                 </select>
 
+                {/* 🏢 Select Gym */}
                 <label>Gym</label>
                 <select
                     name="gym"
@@ -176,7 +177,7 @@ function Clase() {
                     ))}
                 </select>
 
-
+                {/* ⏰ Ora începerii */}
                 <label>Start Time</label>
                 <input
                     type="time"
@@ -186,6 +187,7 @@ function Clase() {
                     required
                 />
 
+                {/* ⏳ Ora închiderii */}
                 <label>End Time</label>
                 <input
                     type="time"
@@ -195,6 +197,7 @@ function Clase() {
                     required
                 />
 
+                {/* 📅 Data clasei */}
                 <label>Class Date</label>
                 <input
                     type="date"
@@ -204,6 +207,7 @@ function Clase() {
                     required
                 />
 
+                {/* 📤 Buton Submit */}
                 <button type="submit">Create Class</button>
             </form>
         </div>
