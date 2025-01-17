@@ -12,8 +12,10 @@ import Angajati from "./Angajati";
 import AngajatiSali from "./AngajatiSali";
 import Clase from "./Clase";
 import "./App.css";
-import ProtectedRoute from "./ProtectedRoute";
 import PlataAbonament from "./PlataAbonament";
+import PlatiAdmin from "./PlatiAdmin";
+import ProtectedRoute from "./ProtectedRoute";
+import AdminRoute from './AdminRoute';
 
 // Componentă pentru Logout
 const LogoutButton = () => {
@@ -55,6 +57,7 @@ function App() {
                             <li><Link to="/angajati">Angajați</Link></li>
                             <li><Link to="/angajati-sali">Angajați Săli</Link></li>
                             <li><Link to="/clase">Clase</Link></li>
+                            <li><Link to="/plati">Istoric plăți</Link></li>
                             <li><Link to="/plata-abonament">Plata abonament</Link></li>
                             <li><Link to="/login">Login</Link></li>
                             <li><Link to="/register">Register</Link></li>
@@ -80,49 +83,49 @@ function App() {
                         <Route
                             path="/sali-fitness"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <SaliFitness />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
                             path="/abonamente"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <Abonamente />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
                             path="/abonamente-sali"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <AbonamenteSali />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
                             path="/angajati"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <Angajati />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
                             path="/angajati-sali"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <AngajatiSali />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
                             path="/clase"
                             element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <Clase />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             }
                         />
                         <Route
@@ -131,6 +134,15 @@ function App() {
                                 <ProtectedRoute>
                                     <PlataAbonament />
                                 </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/plati"
+                            element={
+                                <AdminRoute>
+                                    <PlatiAdmin />
+                                </AdminRoute>
                             }
                         />
                     </Routes>
