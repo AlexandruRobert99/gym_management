@@ -2,14 +2,13 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-    const token = localStorage.getItem('token'); // Verifică dacă există token
+    const token = localStorage.getItem('token');
+    const rol = localStorage.getItem('rol');
 
-    if (!token) {
-        // Dacă utilizatorul nu este logat, redirecționează la login
+    if (!token || rol !== 'client') {
         return <Navigate to="/login" replace />;
     }
 
-    // Dacă utilizatorul este logat, permite accesul la componenta protejată
     return children;
 };
 

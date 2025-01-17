@@ -26,19 +26,33 @@ function Login() {
 
             if (response.ok) {
                 const data = await response.json();
+                localStorage.setItem('rol', data.rol);
 
-                // Salvăm toate datele în localStorage
+                // Salvăm datele în funcție de rol
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('id_client', data.id_client);
                 localStorage.setItem('nume', data.nume);
                 localStorage.setItem('prenume', data.prenume);
                 localStorage.setItem('email', data.email);
-                localStorage.setItem('adresa', data.adresa);
-                localStorage.setItem('telefon', data.telefon);
-                localStorage.setItem('data_nasterii', data.data_nasterii);
-                localStorage.setItem('data_inscrierii', data.data_inscrierii);
 
-                navigate('/dashboard');
+                if (data.rol === 'client') {
+                    localStorage.setItem('id_client', data.id_client);
+                    localStorage.setItem('adresa', data.adresa);
+                    localStorage.setItem('telefon', data.telefon);
+                    localStorage.setItem('data_nasterii', data.data_nasterii);
+                    localStorage.setItem('data_inscrierii', data.data_inscrierii);
+
+                    // 🔵 Redirecționare către Dashboard pentru client
+                    navigate('/dashboard');
+                } else if (data.rol === 'manager') {
+                    localStorage.setItem('id_angajat', data.id_angajat);
+                    localStorage.setItem('functie', data.functie);
+
+                    // 🔵 Redirecționare către Plăți pentru manager
+                    navigate('/plati');
+                } else {
+                    setError('Rol necunoscut.');
+                }
+
             } else {
                 const errorData = await response.json();
                 setError(errorData.error || 'Login failed.');
@@ -48,6 +62,7 @@ function Login() {
             console.error(err);
         }
     };
+
 
     return (
         <div className="form-container">

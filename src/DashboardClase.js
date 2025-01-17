@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import './DashboardClase.css';
 
 const DashboardClase = () => {
     const [clase, setClase] = useState([]);
     const [selectedClass, setSelectedClass] = useState('');
 
-    // Fetch clase disponibile și filtrare pentru clase viitoare
+    // Fetch clase disponibile
     useEffect(() => {
         async function fetchClase() {
             try {
@@ -12,12 +13,9 @@ const DashboardClase = () => {
                 if (response.ok) {
                     const data = await response.json();
 
-                    // 🔥 Filtrăm clasele care sunt în viitor
                     const today = new Date();
                     const futureClasses = data.filter(clasa => new Date(clasa.data_clasa) >= today);
-
                     setClase(futureClasses);
-                    console.log("Clase viitoare:", futureClasses);
                 } else {
                     console.error('Failed to fetch classes');
                 }
@@ -87,45 +85,44 @@ const DashboardClase = () => {
         }
     };
 
-    // Funcție pentru a elimina secundele din ora
-    const formatTime = (time) => {
-        return time ? time.slice(0, 5) : '';  // Ex: '08:25:00' → '08:25'
-    };
+    const formatTime = (time) => time ? time.slice(0, 5) : '';
 
     return (
         <div className="dashboard-classes-container">
             <h3>Clase disponibile</h3>
 
-            {/* Afișare detalii clase */}
-            {clase.length > 0 ? (
-                clase.map((clasa) => (
-                    <div key={clasa.id_clasa} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-                        <p><strong>Nume clasă:</strong> {clasa.nume_clasa}</p>
-                        <p><strong>Data:</strong> {clasa.data_clasa}</p>
-                        <p><strong>Ora începerii:</strong> {formatTime(clasa.ora_incepere)}</p>
-                        <p><strong>Ora închiderii:</strong> {formatTime(clasa.ora_inchidere)}</p>
-                        <p><strong>Capacitate:</strong> {clasa.numar_participanti}/{clasa.capacitate_clasa}</p>
-                        <p><strong>Antrenor:</strong> {clasa.nume_antrenor}</p>
-                        <p><strong>Sala:</strong> {clasa.nume_sala}</p>
-                    </div>
-                ))
-            ) : (
-                <p>Nu sunt clase disponibile în acest moment.</p>
-            )}
+            {/* Dropdown-ul pentru selectarea clasei */}
+            <div className="class-actions">
+                <select value={selectedClass} onChange={handleSelectChange}>
+                    <option value="">Selectează o clasă</option>
+                    {clase.map((clasa) => (
+                        <option key={clasa.id_clasa} value={clasa.id_clasa}>
+                            {clasa.nume_clasa} - {clasa.numar_participanti}/{clasa.capacitate_clasa}
+                        </option>
+                    ))}
+                </select>
 
-            {/*  Select dropdown */}
-            <select value={selectedClass} onChange={handleSelectChange}>
-                <option value="">Selectează o clasă</option>
-                {clase.map((clasa) => (
-                    <option key={clasa.id_clasa} value={clasa.id_clasa}>
-                        {clasa.nume_clasa} - {clasa.numar_participanti}/{clasa.capacitate_clasa}
-                    </option>
-                ))}
-            </select>
+                <button onClick={handleRegister}>Înscrie-te</button>
+                <button onClick={handleCancel}>Anulează</button>
+            </div>
 
-            {/* Butoane de înscriere și anulare */}
-            <button onClick={handleRegister}>Înscrie-te</button>
-            <button onClick={handleCancel}>Anulează înscrierea</button>
+            {/* Grid pentru clase */}
+            <div className="class-grid">
+                {clase.length > 0 ? (
+                    clase.map((clasa) => (
+                        <div key={clasa.id_clasa} className="class-card">
+                            <p><strong>{clasa.nume_clasa}</strong></p>
+                            <p><strong>Data:</strong> {clasa.data_clasa}</p>
+                            <p><strong>Ora:</strong> {formatTime(clasa.ora_incepere)} - {formatTime(clasa.ora_inchidere)}</p>
+                            <p><strong>Capacitate:</strong> {clasa.numar_participanti}/{clasa.capacitate_clasa}</p>
+                            <p><strong>Antrenor:</strong> {clasa.nume_antrenor}</p>
+                            <p><strong>Sala:</strong> {clasa.nume_sala}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>Nu sunt clase disponibile.</p>
+                )}
+            </div>
         </div>
     );
 };

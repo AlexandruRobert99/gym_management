@@ -55,14 +55,13 @@ class LoginView(APIView):
             return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Găsim utilizatorul după email
+            # Găsim utilizatorul în tabelul Clienti
             client = Clienti.objects.get(email=email)
 
-            # Validăm parola criptată
             if not check_password(parola, client.parola):
                 return Response({'error': 'Invalid password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            # Generăm JWT
+            # Generăm JWT pentru client
             payload = {
                 'id_client': client.id_client,
                 'email': client.email,
@@ -71,7 +70,6 @@ class LoginView(APIView):
             }
             token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
-            # Returnăm datele utilizatorului și token-ul
             return Response({
                 'token': token,
                 'id_client': client.id_client,
@@ -81,11 +79,40 @@ class LoginView(APIView):
                 'adresa': client.adresa,
                 'telefon': client.telefon,
                 'data_nasterii': client.data_nasterii,
-                'data_inscrierii': client.data_inscrierii
+                'data_inscrierii': client.data_inscrierii,
+                'rol': 'client'
             }, status=status.HTTP_200_OK)
 
         except Clienti.DoesNotExist:
-            return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                # Dacă nu este client, verificăm dacă este angajat (manager)
+                angajat = Angajati.objects.get(email=email)
+
+                if not check_password(parola, angajat.parola):
+                    return Response({'error': 'Invalid password.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+                # Generăm JWT pentru angajat
+                payload = {
+                    'id_angajat': angajat.id_angajat,
+                    'email': angajat.email,
+                    'functie': angajat.functie,
+                    'exp': datetime.utcnow() + timedelta(days=1),
+                    'iat': datetime.utcnow()
+                }
+                token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+
+                return Response({
+                    'token': token,
+                    'id_angajat': angajat.id_angajat,
+                    'nume': angajat.nume,
+                    'prenume': angajat.prenume,
+                    'email': angajat.email,
+                    'functie': angajat.functie,
+                    'rol': 'manager'
+                }, status=status.HTTP_200_OK)
+
+            except Angajati.DoesNotExist:
+                return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LogoutView(APIView):

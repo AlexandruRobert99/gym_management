@@ -1,0 +1,120 @@
+/* Container general */
+.dashboard-classes-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+}
+
+/* Dropdown și butoane */
+.class-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.class-actions select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+.class-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.class-actions button:hover {
+    background-color: #ffd700;
+    color: #000;
+}
+
+/* Grid-ul pentru clase */
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+/* Cardurile pentru clase */
+.class-card {
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.class-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Stilizare container clase disponibile */
+.dashboard-classes-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Stilizare dropdown pentru clase */
+.dashboard-classes-container select {
+    width: 300px;  /* 🔥 Mai îngust */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+/* 🔥 Butoane mai late și stilizate */
+.dashboard-classes-container button {
+    width: 150px;  /* 🔥 Mai lat */
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Stil pentru butonul de înscriere */
+.dashboard-classes-container button:first-of-type {
+    background-color: #28a745;
+    color: white;
+}
+
+.dashboard-classes-container button:first-of-type:hover {
+    background-color: #218838;
+}
+
+/* Stil pentru butonul de anulare */
+.dashboard-classes-container button:last-of-type {
+    background-color: #dc3545;
+    color: white;
+}
+
+.dashboard-classes-container button:last-of-type:hover {
+    background-color: #c82333;
+}
+
+/* 🔥 Stilizare carduri pentru clase */
+.dashboard-classes-container .class-card {
+    display: inline-block;
+    width: 200px;
+    background-color: #2c2c2c;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+/* Efect hover pe card */
+.dashboard-classes-container .class-card:hover {
+    transform: translateY(-5px);
+}

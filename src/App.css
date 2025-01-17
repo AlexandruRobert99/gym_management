@@ -298,3 +298,69 @@ body {
 .plati-table tr:hover {
   background-color: #3a3a3a;
 }
+
+/* Stil general pentru navbar */
+nav {
+  background-color: #1a1a1a;  /* Fundal închis pentru contrast */
+  padding: 15px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Umbra subtilă */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Lista de linkuri - stil flex pentru distribuție egală */
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 20px; /* Spațiu între linkuri */
+}
+
+/* Link-urile din navbar */
+nav ul li a {
+  text-decoration: none;
+  color: #ffd700;  /* Galben deschis */
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Efect hover pentru linkuri */
+nav ul li a:hover {
+  background-color: #ffd700;
+  color: #1a1a1a; /* Inversare culori la hover */
+  transform: scale(1.1); /* Ușoară mărire la hover */
+}
+
+/* Stil pentru butonul de Logout */
+nav ul li button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Efect hover pentru butonul de Logout */
+nav ul li button:hover {
+  background-color: #ff1a1a;
+  transform: scale(1.05);
+}
+
+/* Linie subțire aurie sub navbar */
+.navbar-underline {
+  height: 2px;
+  background-color: #ffd700;
+  width: 100%;
+  margin-top: 5px;
+}

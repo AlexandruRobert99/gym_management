@@ -2,14 +2,13 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const AdminRoute = ({ children }) => {
-    const functie = localStorage.getItem('functie'); // Extragerea rolului
+    const token = localStorage.getItem('token');
+    const rol = localStorage.getItem('rol');
 
-    if (!functie || functie !== 'manager') {
-        // Dacă nu este manager, redirecționează la login
-        return <Navigate to="/login" replace />;
+    if (!token || rol !== 'manager') {
+        return <Navigate to="/plati" replace />;
     }
 
-    // Dacă este manager, permite accesul
     return children;
 };
 
