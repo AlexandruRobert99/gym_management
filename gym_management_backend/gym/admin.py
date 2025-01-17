@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Clienti, SaliFitness, Abonamente, AbonamenteSali, Angajati, AngajatiSali, Clase
+from .models import Clienti, SaliFitness, Abonamente, AbonamenteSali, Angajati, AngajatiSali, Clase, Plati
 
 @admin.register(Clienti)
 class ClientiAdmin(admin.ModelAdmin):
@@ -37,3 +37,8 @@ class AngajatiSaliAdmin(admin.ModelAdmin):
 class ClaseAdmin(admin.ModelAdmin):
     list_display = ('nume_clasa', 'capacitate_clasa', 'id_antrenor', 'ora_incepere', 'ora_inchidere', 'data_clasa', 'id_sala')
     search_fields = ('nume_clasa', 'id_antrenor__nume', 'id_sala__nume_sala')
+
+@admin.register(Plati)
+class PlatiAdmin(admin.ModelAdmin):
+    list_display = ('id_plata', 'id_client', 'id_abonament', 'suma', 'data_platii')
+    search_fields = ('id_client__nume', 'id_client__prenume', 'id_abonament__nume_abonament')

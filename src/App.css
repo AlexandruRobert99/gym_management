@@ -264,3 +264,37 @@ body {
   background-color: #6c757d;
   cursor: not-allowed;
 }
+
+.plati-admin-container {
+  margin: 20px;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: #ffffff;
+}
+
+.plati-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.plati-table th,
+.plati-table td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+}
+
+.plati-table th {
+  background-color: #333;
+  color: #ffd700;
+}
+
+.plati-table tr:nth-child(even) {
+  background-color: #2c2c2c;
+}
+
+.plati-table tr:hover {
+  background-color: #3a3a3a;
+}

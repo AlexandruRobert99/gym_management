@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import DashboardClase from "./DashboardClase";
 
 const Dashboard = () => {
-    const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState({});
+    const [abonamentActiv, setAbonamentActiv] = useState(null);
 
+    // Preluăm informațiile utilizatorului și abonamentul activ
     useEffect(() => {
         const info = {
             id_client: localStorage.getItem('id_client'),
@@ -17,12 +17,30 @@ const Dashboard = () => {
             adresa: localStorage.getItem('adresa'),
         };
         setUserInfo(info);
+
+        if (info.id_client) {
+            fetchAbonamentActiv(info.id_client);
+        }
     }, []);
 
+    // Preluăm abonamentul activ al utilizatorului
+    const fetchAbonamentActiv = async (clientId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/plati/?id_client=${clientId}`);
+            if (response.ok) {
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    setAbonamentActiv(data[0]);
+                }
+            }
+        } catch (error) {
+            console.error("Eroare la preluarea abonamentului activ:", error);
+        }
+    };
 
     return (
         <div>
-
             {/* Titlul Dashboard */}
             <h1 className="dashboard-title">Dashboard</h1>
 
@@ -31,18 +49,22 @@ const Dashboard = () => {
                 {/* Secțiunea pentru informații */}
                 <div className="dashboard-info-container">
                     <h2>Informații Utilizator</h2>
-                    <p className="dashboard-info">
-                        <span>Nume:</span> {userInfo.nume || 'N/A'}
-                    </p>
-                    <p className="dashboard-info">
-                        <span>Prenume:</span> {userInfo.prenume || 'N/A'}
-                    </p>
-                    <p className="dashboard-info">
-                        <span>Email:</span> {userInfo.email || 'N/A'}
-                    </p>
-                    <p className="dashboard-info">
-                        <span>Telefon:</span> {userInfo.telefon || 'N/A'}
-                    </p>
+                    <p><strong>Nume:</strong> {userInfo.nume || 'N/A'}</p>
+                    <p><strong>Prenume:</strong> {userInfo.prenume || 'N/A'}</p>
+                    <p><strong>Email:</strong> {userInfo.email || 'N/A'}</p>
+                    <p><strong>Telefon:</strong> {userInfo.telefon || 'N/A'}</p>
+
+                    {/* Afișare abonament activ */}
+                    {abonamentActiv ? (
+                        <div className="abonament-info">
+                            <h3>Abonament Activ</h3>
+                            <p><strong>Nume Abonament:</strong> {abonamentActiv.abonament.nume_abonament}</p>
+                            <p><strong>Preț:</strong> {abonamentActiv.abonament.pret} RON</p>
+                            <p><strong>Zile Rămase:</strong> {abonamentActiv.zile_ramase_abonament} zile</p>
+                        </div>
+                    ) : (
+                        <p><strong>Nu ai niciun abonament activ.</strong></p>
+                    )}
                 </div>
 
                 {/* Secțiunea pentru codul QR */}
@@ -61,10 +83,10 @@ const Dashboard = () => {
                     )}
                 </div>
 
+                {/* Secțiunea pentru clase */}
                 <div className="dashboard-clase-container">
                     <DashboardClase />
                 </div>
-
             </div>
         </div>
     );

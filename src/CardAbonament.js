@@ -4,21 +4,20 @@ import './App.css';
 const CardAbonament = ({ abonament }) => {
     const [areAbonamentActiv, setAreAbonamentActiv] = useState(false);
 
-    // Verifică dacă utilizatorul are deja un abonament activ
+    // Verifică dacă utilizatorul are deja un abonament activ (indiferent de tip)
     useEffect(() => {
         const verificaAbonamentActiv = async () => {
             const clientId = localStorage.getItem('id_client');
 
             if (clientId) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:8000/api/abonamente-client/${clientId}/`);
+                    const response = await fetch(`http://127.0.0.1:8000/api/plati/?id_client=${clientId}`);
                     if (response.ok) {
                         const data = await response.json();
-                        // Verificăm dacă abonamentul este activ
-                        const abonamentActiv = data.some(item =>
-                            item.id_abonament === abonament.id_abonament &&
-                            new Date(item.data_expirare) > new Date()
-                        );
+
+                        // Verificăm dacă utilizatorul are orice abonament activ
+                        const abonamentActiv = data.some(item => item.zile_ramase_abonament > 0);
+
                         setAreAbonamentActiv(abonamentActiv);
                     }
                 } catch (error) {
@@ -28,18 +27,20 @@ const CardAbonament = ({ abonament }) => {
         };
 
         verificaAbonamentActiv();
-    }, [abonament.id_abonament]);
+    }, []);
 
+    // Funcție pentru achiziționarea unui abonament
     const handlePurchase = async () => {
         const clientId = localStorage.getItem('id_client');
 
         if (!clientId) {
             alert("Trebuie să fii logat pentru a cumpăra un abonament.");
+
             return;
         }
 
         if (areAbonamentActiv) {
-            alert("Ai deja acest abonament activ.");
+            alert("Ai deja un abonament activ.");
             return;
         }
 
@@ -58,7 +59,8 @@ const CardAbonament = ({ abonament }) => {
 
             if (response.ok) {
                 alert(`Ai achiziționat cu succes abonamentul: ${abonament.nume_abonament}`);
-                setAreAbonamentActiv(true); // Setăm că utilizatorul are acum abonamentul activ
+                setAreAbonamentActiv(true); // Blocăm achiziționarea altor abonamente
+                window.location.reload();
             } else {
                 const data = await response.json();
                 alert(data.error || "Achiziția a eșuat.");
@@ -92,7 +94,7 @@ const CardAbonament = ({ abonament }) => {
                 onClick={handlePurchase}
                 disabled={areAbonamentActiv}
             >
-                {areAbonamentActiv ? "Abonament Activ" : "Cumpără"}
+                {areAbonamentActiv ? "Ai deja un abonament activ" : "Cumpără"}
             </button>
         </div>
     );

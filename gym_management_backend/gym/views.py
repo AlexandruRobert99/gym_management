@@ -434,19 +434,35 @@ class AnulareInscriereClaseView(APIView):
 
 
 class PlatiList(APIView):
+    def get(self, request):
+        plati = Plati.objects.all()
+        serializer = PlatiSerializer(plati, many=True)
+        data = []
+
+        for plata in plati:
+            # Calcul zile ramase abonament
+            data_expirare = plata.data_platii + timedelta(days=plata.id_abonament.valabilitate)
+            zile_ramase = (data_expirare - now().date()).days
+            zile_ramase = max(zile_ramase, 0)  # Dacă a expirat, returnăm 0
+
+            # Adăugăm câmpul calculat în fiecare plată
+            plata_data = PlatiSerializer(plata).data
+            plata_data["zile_ramase_abonament"] = zile_ramase
+            data.append(plata_data)
+
+        return Response(data)
+
     def post(self, request):
         try:
             id_client = request.data.get('id_client')
             id_abonament = request.data.get('id_abonament')
 
-            # Validare existență client și abonament
             client = Clienti.objects.get(pk=id_client)
             abonament = Abonamente.objects.get(pk=id_abonament)
 
-            # Creare plată cu data curentă
             plata = Plati.objects.create(
                 suma=abonament.pret,
-                data_platii=now().date(),  # Se setează automat data curentă
+                data_platii=now().date(),
                 id_abonament=abonament,
                 id_client=client
             )
@@ -462,19 +478,26 @@ class PlatiList(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+from django.utils.timezone import now
+from datetime import timedelta
+
 class PlatiDetail(APIView):
     def get(self, request, pk):
         try:
             plata = Plati.objects.get(pk=pk)
             serializer = PlatiSerializer(plata)
-            return Response(serializer.data)
-        except Plati.DoesNotExist:
-            return Response({"error": "Plata nu a fost găsită."}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk):
-        try:
-            plata = Plati.objects.get(pk=pk)
-            plata.delete()
-            return Response({"message": "Plata a fost ștearsă cu succes."}, status=status.HTTP_204_NO_CONTENT)
+            # Calcul zile ramase abonament
+            data_expirare = plata.data_platii + timedelta(days=plata.id_abonament.valabilitate)
+            zile_ramase = (data_expirare - now().date()).days
+            zile_ramase = max(zile_ramase, 0)  # Dacă a expirat, returnăm 0
+
+            # Adăugăm câmpul calculat în răspuns
+            data = serializer.data
+            data["zile_ramase_abonament"] = zile_ramase
+
+            return Response(data)
+
         except Plati.DoesNotExist:
             return Response({"error": "Plata nu a fost găsită."}, status=status.HTTP_404_NOT_FOUND)

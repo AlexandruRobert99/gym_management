@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import (Clienti, SaliFitness, Abonamente, AbonamenteSali, Angajati,
                      AngajatiSali, Clase, RezervariClase, ParticipareClase, Plati)
+from django.utils.timezone import now
+from datetime import timedelta
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -82,3 +84,12 @@ class PlatiSerializer(serializers.ModelSerializer):
             "email": obj.id_client.email,
             "telefon": obj.id_client.telefon
         }
+
+    def get_zile_ramase_abonament(self, obj):
+        if obj.data_platii and obj.id_abonament:
+            # Calculează data expirării abonamentului
+            data_expirare = obj.data_platii + timedelta(days=obj.id_abonament.valabilitate)
+            # Diferența dintre data expirării și data curentă
+            zile_ramase = (data_expirare - now().date()).days
+            return max(zile_ramase, 0)  # Dacă e negativ, returnează 0
+        return 0
