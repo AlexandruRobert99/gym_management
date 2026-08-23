@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import DashboardClase from "./DashboardClase";
 import './App.css';
@@ -7,7 +7,37 @@ import './Dashboard.css';
 const Dashboard = () => {
     const [userInfo, setUserInfo] = useState({});
     const [abonamentActiv, setAbonamentActiv] = useState(null);
-    const [saliAbonament, setSaliAbonament] = useState([]);  // Adăugat pentru săli
+    const [saliAbonament, setSaliAbonament] = useState([]);
+
+    const fetchSaliAbonament = useCallback(async (abonamentId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/abonamente-sali/`);
+            if (response.ok) {
+                const data = await response.json();
+                const saliFiltrate = data
+                    .filter(item => item.id_abonament === abonamentId)
+                    .map(item => item.sala);
+                setSaliAbonament(saliFiltrate);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, []);
+
+    const fetchAbonamentActiv = useCallback(async (clientId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/plati/?id_client=${clientId}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length > 0) {
+                    setAbonamentActiv(data[0]);
+                    fetchSaliAbonament(data[0].abonament.id_abonament);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [fetchSaliAbonament]);
 
     useEffect(() => {
         const info = {
@@ -25,49 +55,11 @@ const Dashboard = () => {
         }
     }, [fetchAbonamentActiv]);
 
-    // Preluăm abonamentul activ al utilizatorului
-    const fetchAbonamentActiv = async (clientId) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/plati/?id_client=${clientId}`);
-            if (response.ok) {
-                const data = await response.json();
-                if (data.length > 0) {
-                    setAbonamentActiv(data[0]);
-                    fetchSaliAbonament(data[0].abonament.id_abonament);  // Preluăm sălile
-                }
-            }
-        } catch (error) {
-            console.error("Eroare la preluarea abonamentului activ:", error);
-        }
-    };
-
-    // Preluăm sălile asociate abonamentului activ
-    const fetchSaliAbonament = async (abonamentId) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/abonamente-sali/`);
-            if (response.ok) {
-                const data = await response.json();
-
-                // Filtrăm sălile asociate abonamentului activ
-                const saliFiltrate = data
-                    .filter(item => item.id_abonament === abonamentId)
-                    .map(item => item.sala);
-
-                setSaliAbonament(saliFiltrate);
-            }
-        } catch (error) {
-            console.error("Eroare la preluarea sălilor pentru abonament:", error);
-        }
-    };
-
     return (
         <div>
-            {/* Titlul Dashboard */}
             <h1 className="dashboard-title">Dashboard</h1>
 
-            {/* Layout principal: informații + cod QR */}
             <div className="dashboard-layout">
-                {/* Informații utilizator */}
                 <div className="dashboard-info-container">
                     <h2>Informații Utilizator</h2>
                     <p><strong>Nume:</strong> {userInfo.nume || 'N/A'}</p>
@@ -81,7 +73,6 @@ const Dashboard = () => {
                             <p><strong>Nume Abonament:</strong> {abonamentActiv.abonament.nume_abonament}</p>
                             <p><strong>Preț:</strong> {abonamentActiv.abonament.pret} RON</p>
                             <p><strong>Zile Rămase:</strong> {abonamentActiv.zile_ramase_abonament} zile</p>
-
 
                             <h4>Săli disponibile:</h4>
                             {saliAbonament.length > 0 ? (
@@ -101,7 +92,6 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* Cod QR */}
                 <div className="dashboard-qr-container">
                     {userInfo.id_client && (
                         <div>
@@ -118,7 +108,6 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Dropdown și clase */}
             <div className="dashboard-clase-container">
                 <DashboardClase />
             </div>
