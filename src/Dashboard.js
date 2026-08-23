@@ -23,7 +23,7 @@ const Dashboard = () => {
         if (info.id_client) {
             fetchAbonamentActiv(info.id_client);
         }
-    }, []);
+    }, [fetchAbonamentActiv]);
 
     // Preluăm abonamentul activ al utilizatorului
     const fetchAbonamentActiv = async (clientId) => {
